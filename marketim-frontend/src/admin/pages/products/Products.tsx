@@ -338,7 +338,12 @@ const ProductManager = () => {
     if (e.target.files && e.target.files[0]) {
       setIsUploading(true);
       try {
-        const url = await uploadFile(e.target.files[0]);
+        let url = await uploadFile(e.target.files[0]);
+        // Fallback: If returned URL is relative (starts with /), prepend the production backend URL.
+        // This handles cases where fileUploadService.ts update hasn't propagated or env var is missing.
+        if (url.startsWith("/")) {
+          url = "https://marketim-projesi-production.up.railway.app" + url;
+        }
         setFormData((prev) => ({ ...prev, imageUrl: url }));
       } catch (err) {
         console.error("Dosya yükleme hatası:", err);
