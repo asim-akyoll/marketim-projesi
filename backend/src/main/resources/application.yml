@@ -1,0 +1,26 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/marketim
+    username: postgres        # pgAdmin giriş kullanıcı adın ne ise yaz
+    password: 1243  # pgAdmin şifreni buraya yaz
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+  sql:
+    init:
+      mode: always
+      platform: postgresql
+
+server:
+  port: 8080
+
+app:
+  jwt:
+    secret-base64: cfC0BcML40IuB7qoTgb7mVq+TH7LAjH5IMtRE5XiV2s=
+
+

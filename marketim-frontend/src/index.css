@@ -1,0 +1,16 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body {
+  height: 100%;
+  width: 100%;
+  overflow-x: hidden; /* Prevent horizontal scroll */
+  overscroll-behavior-y: none; /* Optional: Prevent bounce effect */
+}
+
+body {
+  @apply bg-gray-50 text-gray-900;
+  position: relative;
+}

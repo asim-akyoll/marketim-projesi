@@ -1,0 +1,52 @@
+package com.marketim.backend.settings;
+
+public enum SettingKey {
+
+    // Delivery
+    DELIVERY_FEE_FIXED,
+    DELIVERY_FREE_THRESHOLD,
+
+    // Payment
+    PAYMENT_ON_DELIVERY_ENABLED,
+    PAYMENT_ON_DELIVERY_METHODS,
+    IBAN_FULL_NAME,
+    IBAN_NUMBER,
+
+    // Order rules
+    MIN_ORDER_AMOUNT,
+    ORDER_ACCEPTING_ENABLED,
+
+    // Working hours
+    WORKING_HOURS_ENABLED,
+    WORKING_HOURS_START,
+    WORKING_HOURS_END,
+
+    // Info / operation
+    ESTIMATED_DELIVERY_MINUTES,
+    DELIVERY_ZONES,
+    ORDER_CLOSED_MESSAGE,
+
+    RETURN_CANCEL_POLICY_TEXT,
+
+    // Store info
+    STORE_NAME,
+    STORE_LOGO,
+    STORE_PHONE,
+    STORE_EMAIL,
+    STORE_ADDRESS,
+
+    // Invoice info
+    INVOICE_TITLE,
+    INVOICE_TAX_NUMBER,
+    INVOICE_TAX_OFFICE,
+
+    // System
+    MAINTENANCE_MODE_ENABLED,
+    MAINTENANCE_MESSAGE,
+
+    // Content
+    FAQ_TEXT,
+    TERMS_TEXT,
+    KVKK_TEXT,
+    DISTANCE_SALES_TEXT,
+}
