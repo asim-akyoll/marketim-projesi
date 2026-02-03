@@ -6,7 +6,7 @@ import { LogOut } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { publicSettingsService } from "../../services/publicSettingsService";
 import { authService } from "../../services/authService";
-import { Clock } from "lucide-react";
+
 import { isShopOpen } from "../../utils/timeUtils";
 
 type Props = {
