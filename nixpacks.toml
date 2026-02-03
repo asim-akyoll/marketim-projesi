@@ -1,0 +1,8 @@
+[phases.setup]
+nixPkgs = ["jdk21_headless"]
+
+[phases.build]
+cmds = ["./mvnw clean package -DskipTests"]
+
+[start]
+cmd = "java -jar -Xmx350m -Xms350m target/*.jar"
