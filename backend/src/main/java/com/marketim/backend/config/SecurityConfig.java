@@ -45,6 +45,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/products/**").permitAll()
                         .requestMatchers("/api/settings/**").permitAll()
                         .requestMatchers("/uploads/**").permitAll()
+                        .requestMatchers("/api/upload").permitAll() // Allow upload for debugging
 
                         // 3) Customer order endpoints
                         .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/orders").permitAll() // Guest Order Creation
@@ -85,6 +86,7 @@ public class SecurityConfig {
         configuration.setAllowedOriginPatterns(java.util.List.of("*")); // Allow all origins including Vercel
         configuration.setAllowedMethods(java.util.List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD"));
         configuration.setAllowedHeaders(java.util.List.of("*"));
+        configuration.setExposedHeaders(java.util.List.of("*"));
         configuration.setAllowCredentials(true);
 
         org.springframework.web.cors.UrlBasedCorsConfigurationSource source = new org.springframework.web.cors.UrlBasedCorsConfigurationSource();
