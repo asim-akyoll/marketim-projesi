@@ -6,7 +6,7 @@
     "build": "tsc",
     "start": "node dist/server.js",
     "dev": "nodemon src/server.js",
-    "postinstall": "prisma generate --schema=./prisma/schema.prisma",
+    "postinstall": "prisma generate",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -14,7 +14,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@prisma/client": "^7.3.0",
+    "@prisma/client": "^5.10.0",
     "bcrypt": "^6.0.0",
     "cloudinary": "^2.9.0",
     "cors": "^2.8.6",
@@ -23,7 +23,7 @@
     "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.3",
     "multer": "^2.0.2",
-    "prisma": "^7.3.0"
+    "prisma": "^5.10.0"
   },
   "devDependencies": {
     "@types/bcrypt": "^6.0.0",
