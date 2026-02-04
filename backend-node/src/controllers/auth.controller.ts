@@ -126,16 +126,25 @@ export const login = async (req: Request, res: Response) => {
         role: user.role
     });
 
+    // Explicitly construct response to avoid BigInt serialization issues with ...spread
     res.json({
       token,
       user: {
-        ...user,
-        id: user.id.toString()
+        id: user.id.toString(),
+        email: user.email,
+        first_name: user.first_name,
+        last_name: user.last_name,
+        role: user.role,
+        phone: user.phone,
+        address: user.address,
+        active: user.active
       }
     });
 
   } catch (error: any) {
     console.error("Login Error:", error);
-    res.status(500).json({ message: "Internal server error: " + error.message });
+    // Explicitly handle BigInt error in message if present
+    const msg = error.message || "Unknown error";
+    res.status(500).json({ message: "Internal server error: " + msg });
   }
 };

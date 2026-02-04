@@ -1,8 +1,14 @@
 import app from "./app";
+import { PrismaClient } from "@prisma/client";
 
-const PORT = process.env.PORT || 8080;
+// GLOBAL FIX: Handle BigInt serialization for JSON
+(BigInt.prototype as any).toJSON = function () {
+  return this.toString();
+};
 
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+const port = process.env.PORT || 3000;
+
+app.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
     console.log(`Environment: ${process.env.NODE_ENV}`);
 });
