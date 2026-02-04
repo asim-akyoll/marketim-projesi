@@ -29,8 +29,8 @@ export type CategoryRequest = {
 
 export async function getAdminCategories(
   query: CategoriesQuery = {}
-): Promise<CategoryAdminListResponse> {
-  const { data } = await http.get<CategoryAdminListResponse>(
+): Promise<CategoryResponse[]> {
+  const { data } = await http.get<CategoryResponse[]>(
     "/api/admin/categories",
     {
       params: {

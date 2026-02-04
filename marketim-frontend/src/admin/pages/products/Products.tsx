@@ -60,7 +60,7 @@ const CategoryManager = () => {
 
     try {
       const data = await getAdminCategories();
-      const sorted = [...data.items].sort((a, b) => {
+      const sorted = [...data].sort((a, b) => {
         let indexA = CATEGORY_ORDER.indexOf(a.name);
         let indexB = CATEGORY_ORDER.indexOf(b.name);
 
