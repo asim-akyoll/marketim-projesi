@@ -20,7 +20,7 @@ export const createOrder = async (req: Request, res: Response) => {
             const orderItemsData = [];
 
             for (const item of items) {
-                const product = products.find(p => p.id === BigInt(item.product.id));
+                const product = products.find((p: any) => p.id === BigInt(item.product.id));
                 if (!product) throw new Error(`Product not found: ${item.product.name}`);
                 if (product.stock < item.quantity) throw new Error(`Insufficient stock for: ${product.name}`);
 
