@@ -31,7 +31,7 @@ foreach ($id in $updates.Keys) {
     } | ConvertTo-Json
 
     try {
-        Invoke-RestMethod -Uri "http://localhost:8080/api/admin/categories/$id" -Method Put -Body $body -ContentType "application/json"
+        Invoke-RestMethod -Uri "http://localhost:3000/api/admin/categories/$id" -Method Put -Body $body -ContentType "application/json"
         Write-Host "Updated ID $id to $name"
     } catch {
         Write-Host "Failed to update ID $id : $_"
@@ -49,7 +49,7 @@ foreach ($name in $creates) {
     } | ConvertTo-Json
 
     try {
-        Invoke-RestMethod -Uri "http://localhost:8080/api/admin/categories" -Method Post -Body $body -ContentType "application/json"
+        Invoke-RestMethod -Uri "http://localhost:3000/api/admin/categories" -Method Post -Body $body -ContentType "application/json"
         Write-Host "Created $name"
     } catch {
         Write-Host "Failed to create $name : $_"

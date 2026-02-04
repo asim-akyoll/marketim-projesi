@@ -68,6 +68,28 @@ export const updateCategory = async (req: Request, res: Response) => {
     }
 };
 
+export const toggleCategoryActive = async (req: Request, res: Response) => {
+    try {
+        const { id } = req.params;
+        const category = await prisma.categories.findUnique({
+            where: { id: BigInt(id as string) }
+        });
+
+        if (!category) {
+            return res.status(404).json({ message: "Category not found" });
+        }
+
+        const updated = await prisma.categories.update({
+            where: { id: BigInt(id as string) },
+            data: { active: !category.active }
+        });
+
+        res.json({ ...updated, id: updated.id.toString() });
+    } catch (error) {
+        res.status(500).json({ message: "Error toggling category status" });
+    }
+}
+
 export const deleteCategory = async (req: Request, res: Response) => {
     try {
         const { id } = req.params;

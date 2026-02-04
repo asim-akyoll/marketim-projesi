@@ -4,7 +4,7 @@ import {
     getAdminProducts, createProduct, updateProduct, deleteProduct, getLowStockProducts 
 } from "../controllers/products.controller";
 import { 
-    getAdminCategories, createCategory, updateCategory, deleteCategory 
+    getAdminCategories, createCategory, updateCategory, deleteCategory, toggleCategoryActive
 } from "../controllers/categories.controller";
 import { 
     getAllOrders, updateOrderStatus 
@@ -32,6 +32,7 @@ router.get("/categories", getAdminCategories);
 router.post("/categories", createCategory);
 router.put("/categories/:id", updateCategory);
 router.delete("/categories/:id", deleteCategory);
+router.patch("/categories/:id/toggle-active", toggleCategoryActive);
 
 // Orders
 router.get("/orders", getAllOrders);
