@@ -1,0 +1,106 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model categories {
+  id          BigInt     @id @default(autoincrement())
+  active      Boolean
+  description String?    @db.VarChar(255)
+  name        String     @unique(map: "ukt8o6pivur7nn124jehx7cygw5") @db.VarChar(255)
+  slug        String     @unique(map: "ukoul14ho7bctbefv8jywp5v3i2") @db.VarChar(255)
+  products    products[]
+}
+
+model order_items {
+  id         BigInt   @id @default(autoincrement())
+  line_total Decimal  @db.Decimal(10, 2)
+  quantity   Int
+  unit_price Decimal  @db.Decimal(10, 2)
+  order_id   BigInt
+  product_id BigInt
+  orders     orders   @relation(fields: [order_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fkbioxgbv59vetrxe0ejfubep1w")
+  products   products @relation(fields: [product_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fkocimc7dtr037rh4ls4l95nlfi")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model orders {
+  id               BigInt        @id @default(autoincrement())
+  contact_phone    String?       @db.VarChar(255)
+  created_at       DateTime?     @db.Timestamp(6)
+  delivery_address String?       @db.VarChar(255)
+  delivery_fee     Decimal       @db.Decimal(10, 2)
+  guest_email      String?       @db.VarChar(255)
+  guest_name       String?       @db.VarChar(255)
+  note             String?       @db.VarChar(255)
+  payment_method   String        @db.VarChar(20)
+  status           String        @db.VarChar(255)
+  subtotal_amount  Decimal       @db.Decimal(10, 2)
+  total_amount     Decimal       @db.Decimal(10, 2)
+  user_id          BigInt?
+  order_items      order_items[]
+  users            users?        @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk32ql8ubntj5uh44ph9659tiih")
+}
+
+model products {
+  id              BigInt            @id @default(autoincrement())
+  active          Boolean
+  created_at      DateTime?         @db.Timestamp(6)
+  description     String?           @db.VarChar(1000)
+  image_url       String?           @db.VarChar(255)
+  name            String            @db.VarChar(255)
+  price           Decimal           @db.Decimal(10, 2)
+  stock           Int
+  unit_label      String?           @db.VarChar(50)
+  updated_at      DateTime?         @db.Timestamp(6)
+  category_id     BigInt?
+  order_items     order_items[]
+  categories      categories?       @relation(fields: [category_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fkog2rp4qthbtt2lfyhfo32lsw9")
+  stock_movements stock_movements[]
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model settings {
+  id            BigInt    @id @default(autoincrement())
+  setting_key   String    @unique(map: "ukswd05dvj4ukvw5q135bpbbfae") @db.VarChar(100)
+  updated_at    DateTime? @db.Timestamp(6)
+  setting_value String
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model stock_movements {
+  id             BigInt    @id @default(autoincrement())
+  actor          String?   @db.VarChar(255)
+  after_stock    Int
+  before_stock   Int
+  created_at     DateTime? @db.Timestamp(6)
+  delta          Int
+  note           String?   @db.VarChar(255)
+  reference_id   BigInt?
+  reference_type String?   @db.VarChar(255)
+  type           String    @db.VarChar(255)
+  product_id     BigInt
+  products       products  @relation(fields: [product_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fkjcaag8ogfjxpwmqypi1wfdaog")
+
+  @@index([created_at], map: "idx_stock_movements_created_at")
+  @@index([product_id], map: "idx_stock_movements_product_id")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model users {
+  id         BigInt    @id @default(autoincrement())
+  active     Boolean
+  address    String?   @db.VarChar(500)
+  created_at DateTime? @db.Timestamp(6)
+  email      String    @unique(map: "uk6dotkott2kjsp8vw4d0m25fb7") @db.VarChar(255)
+  first_name String    @db.VarChar(255)
+  last_name  String    @db.VarChar(255)
+  password   String?   @db.VarChar(255)
+  phone      String?   @db.VarChar(255)
+  role       String?   @db.VarChar(255)
+  orders     orders[]
+}
