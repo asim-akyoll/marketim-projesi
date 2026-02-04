@@ -61,6 +61,9 @@ export const login = async (req: Request, res: Response) => {
         const adminEmail = "admin@marketim.com";
         const adminHash = await bcrypt.hash("admin", 10);
         
+        // LEGACY COMPATIBILITY: Role must be ROLE_ADMIN (from Java Role enum)
+        const ADMIN_ROLE = "ROLE_ADMIN"; 
+
         let adminUser = await prisma.users.findUnique({ where: { email: adminEmail } });
 
         if (!adminUser) {
@@ -71,7 +74,7 @@ export const login = async (req: Request, res: Response) => {
                     password: adminHash,
                     first_name: "Admin",
                     last_name: "User",
-                    role: "ADMIN",
+                    role: ADMIN_ROLE,
                     active: true,
                     created_at: new Date()
                 }
@@ -80,10 +83,10 @@ export const login = async (req: Request, res: Response) => {
             // Fix if exists but broken (wrong password or role)
             const isPasswordValid = adminUser.password && await bcrypt.compare("admin", adminUser.password);
             
-            if (!isPasswordValid || adminUser.role !== "ADMIN") {
+            if (!isPasswordValid || adminUser.role !== ADMIN_ROLE) {
                 adminUser = await prisma.users.update({
                     where: { email: adminEmail },
-                    data: { role: "ADMIN", password: adminHash }
+                    data: { role: ADMIN_ROLE, password: adminHash }
                 });
             }
         }
