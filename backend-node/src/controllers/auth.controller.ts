@@ -56,46 +56,57 @@ export const login = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
 
-    // SPECIAL HANDLING for 'admin' user to ensure access is always possible
+    // SPECIAL HANDLING for 'admin' user
+    let searchEmail = email;
     if (email === "admin") {
-      let adminUser = await prisma.users.findUnique({ where: { email: "admin" } });
-      
-      const adminHash = await bcrypt.hash("admin", 10);
-      
-      if (!adminUser) {
-        // Create admin if missing
-        adminUser = await prisma.users.create({
-          data: {
-            email: "admin",
-            password: adminHash,
-            first_name: "Admin",
-            last_name: "User",
-            role: "ADMIN",
-            active: true,
-            created_at: new Date()
-          }
-        });
-      } else {
-        // Fix admin if exists but broken (wrong password or wrong role)
-        const isPasswordValid = adminUser.password && await bcrypt.compare(password, adminUser.password);
+        searchEmail = "admin@marketim.com"; // Use a valid email format for DB storage
         
-        // If password is "admin" but verification failed (meaning DB has wrong hash), OR role is wrong
-        if ((password === "admin" && !isPasswordValid) || adminUser.role !== "ADMIN") {
-             adminUser = await prisma.users.update({
-                where: { email: "admin" },
-                data: { 
-                    password: adminHash,
-                    role: "ADMIN"
-                }
-             });
+        let adminUser = await prisma.users.findUnique({ where: { email: searchEmail } });
+        const adminHash = await bcrypt.hash("admin", 10);
+        
+        if (!adminUser) {
+            // Create admin if missing
+            try {
+                adminUser = await prisma.users.create({
+                    data: {
+                        email: searchEmail,
+                        password: adminHash,
+                        first_name: "Admin",
+                        last_name: "User",
+                        role: "ADMIN",
+                        active: true,
+                        created_at: new Date()
+                    }
+                });
+            } catch (createErr) {
+                 console.error("Admin Auto-Create Error:", createErr);
+                 // Fallback intended: continue to main flow to see what happens
+            }
+        } else {
+            // Fix admin if exists but hash is wrong (e.g. was plain text) OR role is wrong
+            const isPasswordValid = adminUser.password && await bcrypt.compare(password, adminUser.password);
+            
+            if ((password === "admin" && !isPasswordValid) || adminUser.role !== "ADMIN") {
+                 try {
+                     await prisma.users.update({
+                        where: { email: searchEmail },
+                        data: { 
+                            password: adminHash,
+                            role: "ADMIN" 
+                        }
+                     });
+                 } catch (updateErr) {
+                     console.error("Admin Auto-Fix Error:", updateErr);
+                 }
+            }
         }
-      }
     }
 
-    // Find user (Standard flow)
-    const user = await prisma.users.findUnique({ where: { email } });
+    // Find user (Standard flow with potentially mapped email)
+    const user = await prisma.users.findUnique({ where: { email: searchEmail } });
+    
     if (!user) {
-      return res.status(401).json({ message: "Invalid credentials" }); // Security: Don't reveal user missing
+      return res.status(401).json({ message: "Invalid credentials" }); 
     }
 
     // Check password
@@ -123,8 +134,8 @@ export const login = async (req: Request, res: Response) => {
       }
     });
 
-  } catch (error) {
+  } catch (error: any) {
     console.error("Login Error:", error);
-    res.status(500).json({ message: "Internal server error" });
+    res.status(500).json({ message: "Internal server error: " + error.message });
   }
 };
