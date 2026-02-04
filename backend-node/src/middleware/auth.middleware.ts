@@ -2,14 +2,6 @@ import { Request, Response, NextFunction } from "express";
 import { verifyToken } from "../utils/jwt";
 
 // Extend Express Request
-declare global {
-  namespace Express {
-    interface Request {
-      user?: any;
-    }
-  }
-}
-
 export const authenticate = (req: Request, res: Response, next: NextFunction) => {
   const authHeader = req.headers.authorization;
 
@@ -24,7 +16,7 @@ export const authenticate = (req: Request, res: Response, next: NextFunction) =>
     return res.status(403).json({ message: "Invalid or expired token" });
   }
 
-  req.user = decoded;
+  req.user = decoded as any;
   next();
 };
 

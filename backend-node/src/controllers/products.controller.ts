@@ -71,7 +71,7 @@ export const getProduct = async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
         const product = await prisma.products.findUnique({
-            where: { id: BigInt(id) },
+            where: { id: BigInt(id as string) },
             include: { categories: true }
         });
 
@@ -182,7 +182,7 @@ export const updateProduct = async (req: Request, res: Response) => {
         const { name, price, stock, categoryId, description, imageUrl, unitLabel, active } = req.body;
 
         const product = await prisma.products.update({
-            where: { id: BigInt(id) },
+            where: { id: BigInt(id as string) },
             data: {
                 name,
                 price: price ? new Prisma.Decimal(price) : undefined,
@@ -205,7 +205,7 @@ export const updateProduct = async (req: Request, res: Response) => {
 export const deleteProduct = async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
-        await prisma.products.delete({ where: { id: BigInt(id) } });
+        await prisma.products.delete({ where: { id: BigInt(id as string) } });
         res.json({ message: "Product deleted" });
     } catch (error) {
         res.status(500).json({ message: "Error deleting product" });
