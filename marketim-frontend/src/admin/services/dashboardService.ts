@@ -36,7 +36,7 @@ export type StatusChartResponse = {
 
 export async function getAdminDashboardSummary(): Promise<DashboardSummaryResponse> {
   const { data } = await http.get<DashboardSummaryResponse>(
-    "/api/admin/dashboard/summary"
+    "/api/admin/dashboard"
   );
   return data;
 }
