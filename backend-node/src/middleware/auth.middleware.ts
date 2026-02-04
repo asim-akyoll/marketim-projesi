@@ -31,7 +31,7 @@ export const optionalAuth = (req: Request, res: Response, next: NextFunction) =>
     const decoded = verifyToken(token);
   
     if (decoded) {
-        req.user = decoded;
+        req.user = decoded as any;
     }
     // If token is invalid, we proceed as guest (or should we error? Standard is: if token provided, it must be valid. But for now, let's just ignore invalid token for guest fallback? No, security risk. Better to enforce validity if present.) 
     // Actually, if a user has an expired token, they might want to be guest? 

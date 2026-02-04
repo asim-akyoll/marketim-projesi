@@ -107,6 +107,9 @@ export const createOrder = async (req: Request, res: Response) => {
 
 export const getOrders = async (req: Request, res: Response) => {
     try {
+        if (!req.user) {
+            return res.status(401).json({ message: "Unauthorized" });
+        }
         const userId = BigInt(req.user.userId);
         const orders = await prisma.orders.findMany({
             where: { user_id: userId },
