@@ -28,7 +28,7 @@ export const getDashboardStats = async (req: Request, res: Response) => {
             totalProducts,
             totalSales,
             totalUsers: usersCount,
-            recentOrders: recentOrders.map(o => ({
+            recentOrders: recentOrders.map((o: any) => ({
                 id: o.id.toString(),
                 user: o.users ? `${o.users.first_name} ${o.users.last_name}` : o.guest_name || "Guest",
                 total: o.total_amount.toNumber(),

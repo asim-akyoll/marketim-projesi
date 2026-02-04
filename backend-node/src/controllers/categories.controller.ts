@@ -7,7 +7,7 @@ export const getCategories = async (req: Request, res: Response) => {
             where: { active: true },
             orderBy: { id: 'asc' } // Or reorder logic if implemented
         });
-        res.json(categories.map(c => ({
+        res.json(categories.map((c: any) => ({
             ...c,
             id: c.id.toString()
         })));
@@ -21,7 +21,7 @@ export const getAdminCategories = async (req: Request, res: Response) => {
         const categories = await prisma.categories.findMany({
             orderBy: { id: 'asc' }
         });
-        res.json(categories.map(c => ({
+        res.json(categories.map((c: any) => ({
             ...c,
             id: c.id.toString()
         })));
@@ -55,7 +55,7 @@ export const updateCategory = async (req: Request, res: Response) => {
         const { id } = req.params;
         const { name, description, active } = req.body;
         const category = await prisma.categories.update({
-            where: { id: BigInt(id) },
+            where: { id: BigInt(id as string) },
             data: {
                 name,
                 description,
@@ -71,7 +71,7 @@ export const updateCategory = async (req: Request, res: Response) => {
 export const deleteCategory = async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
-        await prisma.categories.delete({ where: { id: BigInt(id) } });
+        await prisma.categories.delete({ where: { id: BigInt(id as string) } });
         res.json({ message: "Category deleted" });
     } catch (error) {
         res.status(500).json({ message: "Error deleting category" });

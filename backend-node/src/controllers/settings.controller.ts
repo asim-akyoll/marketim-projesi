@@ -37,7 +37,7 @@ export const getSettings = async (req: Request, res: Response) => {
         // Default values
         response.payOnDeliveryMethods = ["CASH", "CREDIT_CARD"]; 
 
-        settings.forEach(s => {
+        settings.forEach((s: any) => {
             const apiKey = KEY_MAP[s.setting_key];
             if (apiKey) {
                 // Type conversion

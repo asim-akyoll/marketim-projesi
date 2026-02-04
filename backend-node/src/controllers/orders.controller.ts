@@ -15,7 +15,7 @@ export const createOrder = async (req: Request, res: Response) => {
         });
 
         // Use transaction
-        const result = await prisma.$transaction(async (tx) => {
+        const result = await prisma.$transaction(async (tx: any) => {
             let subtotal = 0;
             const orderItemsData = [];
 
@@ -89,7 +89,7 @@ export const createOrder = async (req: Request, res: Response) => {
             subtotal_amount: result.subtotal_amount.toNumber(),
             delivery_fee: result.delivery_fee.toNumber(),
             total_amount: result.total_amount.toNumber(),
-            order_items: result.order_items.map(i => ({
+            order_items: result.order_items.map((i: any) => ({
                 ...i,
                 id: i.id.toString(),
                 order_id: i.order_id.toString(),
@@ -114,7 +114,7 @@ export const getOrders = async (req: Request, res: Response) => {
             include: { order_items: { include: { products: true } } }
         });
 
-        res.json(orders.map(o => serializeOrder(o)));
+        res.json(orders.map((o: any) => serializeOrder(o)));
     } catch (error) {
         res.status(500).json({ message: "Error fetching orders" });
     }
@@ -122,8 +122,8 @@ export const getOrders = async (req: Request, res: Response) => {
 
 export const getAllOrders = async (req: Request, res: Response) => {
     try {
-        const page = parseInt(req.query.page as string) || 0;
-        const size = parseInt(req.query.size as string) || 15;
+        const page = parseInt((req.query.page as string) || "0");
+        const size = parseInt((req.query.size as string) || "15");
         
         const [orders, totalElements] = await Promise.all([
             prisma.orders.findMany({
@@ -138,7 +138,7 @@ export const getAllOrders = async (req: Request, res: Response) => {
         const totalPages = Math.ceil(totalElements / size);
 
         res.json({
-            content: orders.map(o => serializeOrder(o)),
+            content: orders.map((o: any) => serializeOrder(o)),
             totalPages,
             totalElements,
             size,
@@ -155,7 +155,7 @@ export const getOrder = async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
         const order = await prisma.orders.findUnique({
-            where: { id: BigInt(id) },
+            where: { id: BigInt(id as string) },
             include: { order_items: { include: { products: true } }, users: true }
         });
         if (!order) return res.status(404).json({ message: "Order not found" });
@@ -171,7 +171,7 @@ export const updateOrderStatus = async (req: Request, res: Response) => {
         const { status } = req.body;
 
         const order = await prisma.orders.update({
-            where: { id: BigInt(id) },
+            where: { id: BigInt(id as string) },
             data: { status }
         });
         res.json(serializeOrder(order));

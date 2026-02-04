@@ -6,8 +6,8 @@ import { Prisma } from "@prisma/client";
 
 export const getProducts = async (req: Request, res: Response) => {
   try {
-    const page = parseInt(req.query.page as string) || 0;
-    const size = parseInt(req.query.size as string) || 10;
+    const page = parseInt((req.query.page as string) || "0");
+    const size = parseInt((req.query.size as string) || "10");
     const search = req.query.search as string;
     const categoryId = req.query.categoryId ? parseInt(req.query.categoryId as string) : undefined;
     const sort = req.query.sort as string; // 'price,asc', 'price,desc', 'created_at,desc' (newest)
@@ -44,7 +44,7 @@ export const getProducts = async (req: Request, res: Response) => {
     const totalPages = Math.ceil(totalElements / size);
 
     res.json({
-      content: content.map(p => ({
+      content: content.map((p: any) => ({
         ...p,
         id: p.id.toString(),
         category_id: p.category_id?.toString(),
@@ -94,8 +94,8 @@ export const getProduct = async (req: Request, res: Response) => {
 
 export const getAdminProducts = async (req: Request, res: Response) => {
     try {
-      const page = parseInt(req.query.page as string) || 0;
-      const size = parseInt(req.query.size as string) || 10;
+      const page = parseInt((req.query.page as string) || "0");
+      const size = parseInt((req.query.size as string) || "10");
       const search = req.query.search as string;
       const categoryId = req.query.categoryId ? parseInt(req.query.categoryId as string) : undefined;
       const sort = req.query.sort as string; // 'id,desc' default for admin usually
@@ -132,7 +132,7 @@ export const getAdminProducts = async (req: Request, res: Response) => {
       const totalPages = Math.ceil(totalElements / size);
   
       res.json({
-        content: content.map(p => ({
+        content: content.map((p: any) => ({
             ...p,
             id: p.id.toString(),
             category_id: p.category_id?.toString(),
@@ -159,8 +159,8 @@ export const createProduct = async (req: Request, res: Response) => {
             data: {
                 name,
                 price: new Prisma.Decimal(price),
-                stock: parseInt(stock),
-                category_id: categoryId ? BigInt(categoryId) : null,
+                stock: parseInt(stock as string),
+                category_id: categoryId ? BigInt(categoryId as string) : null,
                 description,
                 image_url: imageUrl,
                 unit_label: unitLabel || "Adet",
@@ -186,8 +186,8 @@ export const updateProduct = async (req: Request, res: Response) => {
             data: {
                 name,
                 price: price ? new Prisma.Decimal(price) : undefined,
-                stock: stock !== undefined ? parseInt(stock) : undefined,
-                category_id: categoryId ? BigInt(categoryId) : undefined,
+                stock: stock !== undefined ? parseInt(stock as string) : undefined,
+                category_id: categoryId ? BigInt(categoryId as string) : undefined,
                 description,
                 image_url: imageUrl,
                 unit_label: unitLabel,
@@ -219,7 +219,7 @@ export const getLowStockProducts = async (req: Request, res: Response) => {
             where: { stock: { lte: threshold }, active: true },
             take: 5
         });
-        res.json(products.map(p => ({
+        res.json(products.map((p: any) => ({
             ...p,
             id: p.id.toString(),
             price: p.price.toNumber()
