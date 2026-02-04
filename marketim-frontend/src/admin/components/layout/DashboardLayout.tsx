@@ -1,11 +1,33 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Outlet } from "react-router-dom";
 import Sidebar from "./Sidebar";
 import { Menu } from "lucide-react";
+import http from "../../../services/http";
 
 const DashboardLayout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+
+  // Heartbeat Mechanism: Pings backend every 5 mins to prevent sleep on Render free tier
+  useEffect(() => {
+    const pingBackend = async () => {
+      try {
+        // Simple HEAD request to wake up or keep alive
+        await http.head("/api/products"); 
+        console.log("Heartbeat sent: Server is awake 💓");
+      } catch (error) {
+        // Ignore errors, just trying to wake up
+      }
+    };
+
+    // Initial ping
+    pingBackend();
+
+    // Ping every 5 minutes (300,000 ms)
+    const interval = setInterval(pingBackend, 300000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <div className="min-h-screen bg-gray-100 flex">

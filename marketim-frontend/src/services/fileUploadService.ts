@@ -10,8 +10,13 @@ export const uploadFile = async (file: File): Promise<string> => {
     },
   });
 
-  // Backend returns "/uploads/filename.jpg". 
-  // We need to prepend the API Base URL so the frontend (Vercel) loads it from the Backend (Railway).
+  // If backend returns a full URL (Cloudinary), return it directly.
+  const url = response.data;
+  if (url.startsWith("http")) {
+    return url;
+  }
+
+  // Otherwise (local dev or relative path), prepend API Base URL
   const apiBase = (import.meta as any).env.VITE_API_BASE_URL || "http://localhost:8080";
-  return `${apiBase}${response.data}`;
+  return `${apiBase}${url}`;
 };
