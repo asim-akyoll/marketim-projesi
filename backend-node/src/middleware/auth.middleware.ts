@@ -41,7 +41,8 @@ export const optionalAuth = (req: Request, res: Response, next: NextFunction) =>
   };
 
 export const requireAdmin = (req: Request, res: Response, next: NextFunction) => {
-    if (!req.user || req.user.role !== "ADMIN") {
+    // Check for both legacy "ADMIN" and correct "ROLE_ADMIN"
+    if (!req.user || (req.user.role !== "ADMIN" && req.user.role !== "ROLE_ADMIN")) {
         return res.status(403).json({ message: "Admin access required" });
     }
     next();
