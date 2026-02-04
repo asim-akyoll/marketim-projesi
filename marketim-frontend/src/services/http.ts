@@ -1,6 +1,6 @@
 import axios, { AxiosError } from "axios";
 
-const API_BASE_URL = "https://marketim-projesi-production.up.railway.app";
+const API_BASE_URL = "https://marketim-projesi.onrender.com";
 
 const http = axios.create({
   baseURL: API_BASE_URL,

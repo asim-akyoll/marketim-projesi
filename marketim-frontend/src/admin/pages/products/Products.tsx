@@ -340,9 +340,8 @@ const ProductManager = () => {
       try {
         let url = await uploadFile(e.target.files[0]);
         // Fallback: If returned URL is relative (starts with /), prepend the production backend URL.
-        // This handles cases where fileUploadService.ts update hasn't propagated or env var is missing.
         if (url.startsWith("/")) {
-          url = "https://marketim-projesi-production.up.railway.app" + url;
+          url = "https://marketim-projesi.onrender.com" + url;
         }
         setFormData((prev) => ({ ...prev, imageUrl: url }));
       } catch (err) {
