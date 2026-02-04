@@ -219,11 +219,20 @@ export const getLowStockProducts = async (req: Request, res: Response) => {
             where: { stock: { lte: threshold }, active: true },
             take: 5
         });
-        res.json(products.map((p: any) => ({
+        const productsMapped = products.map((p: any) => ({
             ...p,
             id: p.id.toString(),
             price: p.price.toNumber()
-        })));
+        }));
+        
+        // Mock PageResponse structure for frontend compatibility
+        res.json({
+            content: productsMapped,
+            totalElements: products.length,
+            totalPages: 1,
+            size: 5,
+            number: 0
+        });
     } catch (error) {
         res.status(500).json({ message: "Error fetching low stock" });
     }
