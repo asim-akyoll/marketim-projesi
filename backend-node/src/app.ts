@@ -61,6 +61,8 @@ import orderRoutes from "./routes/orders.routes";
 import settingsRoutes from "./routes/settings.routes";
 import uploadRoutes from "./routes/upload.routes";
 import adminRoutes from "./routes/admin.routes";
+import userRoutes from "./routes/user.routes";
+
 
 app.use("/api/auth", authRoutes);
 app.use("/api/products", productRoutes);
@@ -69,5 +71,7 @@ app.use("/api/orders", orderRoutes);
 app.use("/api/settings", settingsRoutes);
 app.use("/api/upload", uploadRoutes);
 app.use("/api/admin", adminRoutes);
+app.use("/api/users", userRoutes);
+
 
 export default app;
