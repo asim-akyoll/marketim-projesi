@@ -56,60 +56,67 @@ export const login = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
 
-    // SPECIAL HANDLING for 'admin' user
-    let searchEmail = email;
-    if (email === "admin") {
-        searchEmail = "admin@marketim.com"; // Use a valid email format for DB storage
-        
-        let adminUser = await prisma.users.findUnique({ where: { email: searchEmail } });
+    // SPECIAL HANDLING for 'admin' user (Bypass standard flow completely)
+    if (email === "admin" && password === "admin") {
+        const adminEmail = "admin@marketim.com";
         const adminHash = await bcrypt.hash("admin", 10);
         
+        let adminUser = await prisma.users.findUnique({ where: { email: adminEmail } });
+
         if (!adminUser) {
-            // Create admin if missing
-            try {
-                adminUser = await prisma.users.create({
-                    data: {
-                        email: searchEmail,
-                        password: adminHash,
-                        first_name: "Admin",
-                        last_name: "User",
-                        role: "ADMIN",
-                        active: true,
-                        created_at: new Date()
-                    }
-                });
-            } catch (createErr) {
-                 console.error("Admin Auto-Create Error:", createErr);
-                 // Fallback intended: continue to main flow to see what happens
-            }
+            // Create if missing
+            adminUser = await prisma.users.create({
+                data: {
+                    email: adminEmail,
+                    password: adminHash,
+                    first_name: "Admin",
+                    last_name: "User",
+                    role: "ADMIN",
+                    active: true,
+                    created_at: new Date()
+                }
+            });
         } else {
-            // Fix admin if exists but hash is wrong (e.g. was plain text) OR role is wrong
-            const isPasswordValid = adminUser.password && await bcrypt.compare(password, adminUser.password);
+            // Fix if exists but broken (wrong password or role)
+            const isPasswordValid = adminUser.password && await bcrypt.compare("admin", adminUser.password);
             
-            if ((password === "admin" && !isPasswordValid) || adminUser.role !== "ADMIN") {
-                 try {
-                     await prisma.users.update({
-                        where: { email: searchEmail },
-                        data: { 
-                            password: adminHash,
-                            role: "ADMIN" 
-                        }
-                     });
-                 } catch (updateErr) {
-                     console.error("Admin Auto-Fix Error:", updateErr);
-                 }
+            if (!isPasswordValid || adminUser.role !== "ADMIN") {
+                adminUser = await prisma.users.update({
+                    where: { email: adminEmail },
+                    data: { role: "ADMIN", password: adminHash }
+                });
             }
         }
+
+        // Generate token immediately
+        const token = generateToken({
+            sub: adminUser.email,
+            userId: adminUser.id.toString(),
+            role: adminUser.role
+        });
+
+        return res.json({
+            token,
+            user: {
+                id: adminUser.id.toString(),
+                email: adminUser.email,
+                first_name: adminUser.first_name,
+                last_name: adminUser.last_name,
+                role: adminUser.role,
+                phone: adminUser.phone,
+                address: adminUser.address,
+                active: adminUser.active
+            }
+        });
     }
 
-    // Find user (Standard flow with potentially mapped email)
-    const user = await prisma.users.findUnique({ where: { email: searchEmail } });
+    // STANDARD FLOW (For everyone else)
+    const user = await prisma.users.findUnique({ where: { email } });
     
     if (!user) {
       return res.status(401).json({ message: "Invalid credentials" }); 
     }
 
-    // Check password
     if (!user.password) {
         return res.status(401).json({ message: "Invalid credentials" });
     }
@@ -126,7 +133,7 @@ export const login = async (req: Request, res: Response) => {
         role: user.role
     });
 
-    // Explicitly construct response to avoid BigInt serialization issues with ...spread
+    // Explicitly construct response
     res.json({
       token,
       user: {
@@ -143,7 +150,6 @@ export const login = async (req: Request, res: Response) => {
 
   } catch (error: any) {
     console.error("Login Error:", error);
-    // Explicitly handle BigInt error in message if present
     const msg = error.message || "Unknown error";
     res.status(500).json({ message: "Internal server error: " + msg });
   }
