@@ -11,6 +11,7 @@ import {
 } from "../controllers/orders.controller";
 import { updateSettings, getSettings } from "../controllers/settings.controller";
 import { getDashboardStats } from "../controllers/dashboard.controller";
+import { getCustomers } from "../controllers/user.controller";
 
 const router = Router();
 
@@ -41,5 +42,9 @@ router.put("/orders/:id/status", updateOrderStatus);
 // Settings
 router.get("/settings", getSettings); // Admin sees same settings
 router.put("/settings", updateSettings);
+router.patch("/settings", updateSettings); // Alias for frontend usage
+
+// Customers
+router.get("/customers", getCustomers);
 
 export default router;

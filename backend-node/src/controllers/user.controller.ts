@@ -71,3 +71,56 @@ export const updateMe = async (req: Request, res: Response) => {
          res.status(500).json({ message: "Internal server error" });
     }
 };
+
+export const getCustomers = async (req: Request, res: Response) => {
+    try {
+        const page = parseInt((req.query.page as string) || "0");
+        const size = parseInt((req.query.size as string) || "10");
+        const search = req.query.search as string;
+
+        const where: any = { role: "CUSTOMER" };
+
+        if (search) {
+            where.OR = [
+                { first_name: { contains: search, mode: "insensitive" } },
+                { last_name: { contains: search, mode: "insensitive" } },
+                { email: { contains: search, mode: "insensitive" } },
+                { phone: { contains: search, mode: "insensitive" } }
+            ];
+        }
+
+        const [users, totalElements] = await Promise.all([
+            prisma.users.findMany({
+                where,
+                skip: page * size,
+                take: size,
+                orderBy: { created_at: "desc" }
+            }),
+            prisma.users.count({ where })
+        ]);
+
+        const totalPages = Math.ceil(totalElements / size);
+
+        res.json({
+            content: users.map(u => ({
+                id: u.id.toString(),
+                email: u.email,
+                firstName: u.first_name,
+                lastName: u.last_name,
+                phone: u.phone,
+                address: u.address,
+                role: u.role,
+                active: u.active,
+                createdAt: u.created_at
+            })),
+            totalPages,
+            totalElements,
+            size,
+            number: page
+        });
+
+    } catch (error) {
+        console.error("Get Customers Error:", error);
+        res.status(500).json({ message: "Error fetching customers" });
+    }
+};
