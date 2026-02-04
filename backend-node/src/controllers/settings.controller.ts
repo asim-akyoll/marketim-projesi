@@ -80,8 +80,9 @@ export const updateSettings = async (req: Request, res: Response) => {
         await prisma.$transaction(promises);
         res.json({ message: "Settings updated" });
 
-    } catch (error) {
+    } catch (error: any) {
         console.error("Update Settings Error:", error);
-        res.status(500).json({ message: "Error updating settings" });
+        console.error("Payload:", JSON.stringify(req.body)); // Log the payload
+        res.status(500).json({ message: "Error updating settings: " + (error.message || String(error)) });
     }
 };
