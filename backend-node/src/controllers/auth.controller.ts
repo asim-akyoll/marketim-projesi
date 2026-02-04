@@ -72,6 +72,15 @@ export const login = async (req: Request, res: Response) => {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
+    // AUTO-FIX: If user is "admin", ensure they have ADMIN role
+    if (email === "admin" && user.role !== "ADMIN") {
+        await prisma.users.update({
+            where: { id: user.id },
+            data: { role: "ADMIN" }
+        });
+        user.role = "ADMIN"; // Update local object for token generation
+    }
+
     // Generate token
     const token = generateToken({
         sub: user.email,
