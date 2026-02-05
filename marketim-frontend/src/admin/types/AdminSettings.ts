@@ -13,8 +13,8 @@ export interface AdminSettings {
 
   // Working hours
   workingHoursEnabled: boolean;
-  workingHoursStart: string;
-  workingHoursEnd: string;
+  openingTime: string;
+  closingTime: string;
 
   // Info
   estimatedDeliveryMinutes: number;
@@ -25,9 +25,9 @@ export interface AdminSettings {
   // Store info
   storeName: string;
   storeLogo: string;
-  storePhone: string;
-  storeEmail: string;
-  storeAddress: string;
+  phone: string;
+  email: string;
+  address: string;
 
   // Invoice
   invoiceTitle: string;

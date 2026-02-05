@@ -20,8 +20,8 @@ function safeDecodeJwt(token: string) {
 
 const statusLabel = (s: OrderStatus) => {
   switch (s) {
-    case "PENDING":
-      return "Bekliyor";
+    case "PREPARING":
+      return "Hazırlanıyor";
     case "DELIVERED":
       return "Teslim Edildi";
     case "CANCELLED":
@@ -56,11 +56,13 @@ export default function Account() {
     fullName: "",
     phone: "",
     address: "",
+    username: "",
   });
   const [draft, setDraft] = useState<Profile>({
     fullName: "",
     phone: "",
     address: "",
+    username: "",
   });
   const [profileLoading, setProfileLoading] = useState(false);
   const [profileSaving, setProfileSaving] = useState(false);
@@ -89,6 +91,7 @@ export default function Account() {
           fullName: p.fullName || jwtName || "",
           phone: p.phone || "",
           address: p.address || "",
+          username: p.username || "",
         };
         setProfile(merged);
         setDraft(merged);
@@ -121,7 +124,8 @@ export default function Account() {
     const same =
       profile.fullName === draft.fullName &&
       profile.phone === draft.phone &&
-      profile.address === draft.address;
+      profile.address === draft.address &&
+      profile.username === draft.username;
 
     const hasAny =
       draft.fullName.trim() || draft.phone.trim() || draft.address.trim();
@@ -232,6 +236,27 @@ export default function Account() {
                         ) : (
                             <div className="h-11 flex items-center text-lg font-medium text-gray-900">
                                 {profile.fullName || "—"}
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Username */}
+                    <div>
+                        <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Kullanıcı Adı (Opsiyonel)</label>
+                        {profileLoading ? (
+                            <div className="h-11 bg-gray-50 rounded-xl animate-pulse" />
+                        ) : editMode ? (
+                            <input
+                            value={draft.username || ""}
+                            onChange={(e) =>
+                                setDraft((d) => ({ ...d, username: e.target.value }))
+                            }
+                            className="w-full h-11 px-4 rounded-xl border border-gray-200 bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all font-medium"
+                            placeholder="kullaniciadi"
+                            />
+                        ) : (
+                            <div className="h-11 flex items-center text-lg font-medium text-gray-900">
+                                {profile.username || "—"}
                             </div>
                         )}
                     </div>
@@ -381,7 +406,7 @@ export default function Account() {
                              {statusLabel(o.status)}
                          </div>
                          <div className="text-xl font-bold text-gray-900 tabular-nums">
-                            {formatTry(Number(o.totalAmount))}
+                            {formatTry(Number(o.totalAmount || 0))}
                          </div>
                     </div>
                   </div>

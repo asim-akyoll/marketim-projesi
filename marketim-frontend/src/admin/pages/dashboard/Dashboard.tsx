@@ -126,7 +126,7 @@ const Dashboard = () => {
     const safe = summary;
 
     const todayOrderCount = Number(safe?.todayOrderCount ?? 0);
-    const pending = Number(safe?.pending ?? 0);
+    const preparing = Number(safe?.preparing ?? 0);
     const delivered = Number(safe?.delivered ?? 0);
     const cancelled = Number(safe?.cancelled ?? 0);
     const totalOrders = Number(safe?.totalOrders ?? 0);
@@ -140,7 +140,7 @@ const Dashboard = () => {
     return {
       totalCount: totalOrders,
       dailyCount: todayOrderCount,
-      pendingCount: pending,
+      preparingCount: preparing,
       deliveredCount: delivered,
       cancelledCount: cancelled,
       dailyRevenue,
@@ -177,8 +177,8 @@ const Dashboard = () => {
         />
 
         <StatCard
-          title="Bekleyen Sipariş"
-          value={loading ? "..." : uiStats.pendingCount}
+          title="Hazırlanan Sipariş"
+          value={loading ? "..." : uiStats.preparingCount}
           icon={<Clock />}
           bgClass="bg-yellow-50"
           iconClass="text-yellow-600"

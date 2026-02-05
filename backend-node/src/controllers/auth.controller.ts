@@ -5,12 +5,40 @@ import { generateToken } from "../utils/jwt";
 
 export const register = async (req: Request, res: Response) => {
   try {
-    const { email, password, firstName, lastName, phone, address } = req.body;
+    const { email, password, firstName, lastName, phone, address, fullName, username } = req.body;
 
-    // Check if user exists
+    // Validation
+    if (!email || !password) {
+      return res.status(400).json({ message: "Email and password are required" });
+    }
+
+    let finalFirstName = firstName;
+    let finalLastName = lastName;
+
+    // Frontend fullName gönderiyorsa parçala
+    if (fullName && (!finalFirstName || !finalLastName)) {
+        const parts = fullName.trim().split(" ");
+        if (parts.length > 1) {
+            finalLastName = parts.pop() || "";
+            finalFirstName = parts.join(" ");
+        } else {
+            finalFirstName = parts[0] || "";
+            finalLastName = "";
+        }
+    }
+
+    // Check if email exists
     const existingUser = await prisma.users.findUnique({ where: { email } });
     if (existingUser) {
       return res.status(400).json({ message: "Email already exists" });
+    }
+
+    // Check if username exists (if provided)
+    if (username) {
+      const existingUsername = await prisma.users.findUnique({ where: { username } });
+      if (existingUsername) {
+        return res.status(400).json({ message: "Username already exists" });
+      }
     }
 
     // Hash password
@@ -21,10 +49,11 @@ export const register = async (req: Request, res: Response) => {
       data: {
         email,
         password: hashedPassword,
-        first_name: firstName,
-        last_name: lastName,
+        first_name: finalFirstName,
+        last_name: finalLastName,
         phone,
         address,
+        username: username || null,
         role: "CUSTOMER",
         active: true,
         created_at: new Date()
@@ -46,9 +75,9 @@ export const register = async (req: Request, res: Response) => {
       }
     });
 
-  } catch (error) {
-    console.error("Register Error:", error);
-    res.status(500).json({ message: "Internal server error" });
+  } catch (error: any) {
+    console.error("Register Error:", error.message);
+    res.status(500).json({ message: "Internal server error: " + error.message });
   }
 };
 
@@ -114,7 +143,17 @@ export const login = async (req: Request, res: Response) => {
     }
 
     // STANDARD FLOW (For everyone else)
-    const user = await prisma.users.findUnique({ where: { email } });
+    // Support login with email OR username
+    const emailOrUsername = email; // Frontend sends this in 'email' field
+    
+    const user = await prisma.users.findFirst({ 
+        where: { 
+            OR: [
+                { email: emailOrUsername },
+                { username: emailOrUsername }
+            ]
+        } 
+    });
     
     if (!user) {
       return res.status(401).json({ message: "Invalid credentials" }); 

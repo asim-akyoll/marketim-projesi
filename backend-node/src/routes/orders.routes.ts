@@ -8,6 +8,7 @@ const router = Router();
 router.post("/", optionalAuth, createOrder);
 
 // Only authenticated users can list their orders
+router.get("/my", authenticate, getOrders);
 router.get("/", authenticate, getOrders);
 router.get("/:id", authenticate, getOrder);
 

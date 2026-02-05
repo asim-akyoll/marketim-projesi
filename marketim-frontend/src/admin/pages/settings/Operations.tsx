@@ -60,9 +60,9 @@ const Operations = () => {
               <input
                 type="time"
                 className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500"
-                value={settings.workingHoursStart}
+                value={settings.openingTime ?? ""}
                 onChange={(e) =>
-                  updateField("workingHoursStart", e.target.value)
+                  updateField("openingTime", e.target.value)
                 }
                 disabled={!settings.workingHoursEnabled}
               />
@@ -75,8 +75,8 @@ const Operations = () => {
               <input
                 type="time"
                 className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500"
-                value={settings.workingHoursEnd}
-                onChange={(e) => updateField("workingHoursEnd", e.target.value)}
+                value={settings.closingTime ?? ""}
+                onChange={(e) => updateField("closingTime", e.target.value)}
                 disabled={!settings.workingHoursEnabled}
               />
             </div>
@@ -98,7 +98,7 @@ const Operations = () => {
               type="number"
               className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500"
               value={
-                settings.estimatedDeliveryMinutes === 0
+                (settings.estimatedDeliveryMinutes ?? 0) === 0
                   ? ""
                   : settings.estimatedDeliveryMinutes
               }
@@ -133,7 +133,7 @@ const Operations = () => {
               <textarea
                 rows={3}
                 className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500"
-                value={settings.orderClosedMessage}
+                value={settings.orderClosedMessage ?? ""}
                 onChange={(e) =>
                   updateField("orderClosedMessage", e.target.value)
                 }

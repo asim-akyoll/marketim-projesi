@@ -1,6 +1,6 @@
 import http from "./http";
 
-export type OrderStatus = "PENDING" | "DELIVERED" | "CANCELLED";
+export type OrderStatus = "PREPARING" | "DELIVERED" | "CANCELLED";
 
 export interface OrderAdminListItem {
   id: number;

@@ -60,23 +60,25 @@ const Login = () => {
 
         <form onSubmit={onSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Kullanıcı Adı veya E-posta
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+              E-posta veya Kullanıcı Adı
             </label>
             <input
+              id="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="w-full rounded-xl border border-gray-200 bg-gray-50 p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="admin veya ornek@mail.com"
+              placeholder="ornek@gmail.com veya kullaniciadi"
               autoComplete="username"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
               Şifre
             </label>
             <input
+              id="password"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}

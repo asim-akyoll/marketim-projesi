@@ -23,7 +23,9 @@ const KEY_MAP: Record<string, string> = {
     WORKING_HOURS_START: "openingTime",
     WORKING_HOURS_END: "closingTime",
     MIN_ORDER_AMOUNT: "minOrderAmount",
-    ORDER_ACCEPTING_ENABLED: "orderAcceptingEnabled"
+    ORDER_ACCEPTING_ENABLED: "orderAcceptingEnabled",
+    PAY_ON_DELIVERY_METHODS: "payOnDeliveryMethods",
+    ORDER_CLOSED_MESSAGE: "orderClosedMessage"
 };
 
 // Reverse Map
@@ -43,8 +45,10 @@ export const getSettings = async (req: Request, res: Response) => {
                 // Type conversion
                 if (['payOnDeliveryEnabled', 'maintenanceModeEnabled', 'workingHoursEnabled', 'orderAcceptingEnabled'].includes(apiKey)) {
                     response[apiKey] = s.setting_value === 'true';
-                } else if (['deliveryFeeFixed', 'deliveryFreeThreshold', 'minOrderAmount'].includes(apiKey)) {
+                } else if (['deliveryFeeFixed', 'deliveryFreeThreshold', 'minOrderAmount', 'estimatedDeliveryMinutes'].includes(apiKey)) {
                     response[apiKey] = parseFloat(s.setting_value);
+                } else if (apiKey === 'payOnDeliveryMethods') {
+                     response[apiKey] = s.setting_value ? s.setting_value.split(',') : [];
                 } else {
                     response[apiKey] = s.setting_value;
                 }
@@ -71,8 +75,6 @@ export const updateSettings = async (req: Request, res: Response) => {
                 if (value !== null && value !== undefined) {
                     strValue = String(value);
                 }
-
-                console.log(`Upserting ${dbKey} with length ${strValue.length}`);
                 
                 promises.push(
                     prisma.settings.upsert({
@@ -85,11 +87,33 @@ export const updateSettings = async (req: Request, res: Response) => {
         }
 
         await prisma.$transaction(promises);
-        res.json({ message: "Settings updated" });
+
+        // Fetch updated settings to return
+        const freshSettings = await prisma.settings.findMany();
+
+        const response: any = {};
+        response.payOnDeliveryMethods = ["CASH", "CREDIT_CARD"];
+
+        freshSettings.forEach((s: any) => {
+            const apiKey = KEY_MAP[s.setting_key];
+            if (apiKey) {
+                if (['payOnDeliveryEnabled', 'maintenanceModeEnabled', 'workingHoursEnabled', 'orderAcceptingEnabled'].includes(apiKey)) {
+                    response[apiKey] = s.setting_value === 'true';
+                } else if (['deliveryFeeFixed', 'deliveryFreeThreshold', 'minOrderAmount', 'estimatedDeliveryMinutes'].includes(apiKey)) {
+                    response[apiKey] = parseFloat(s.setting_value);
+                } else if (apiKey === 'payOnDeliveryMethods') {
+                     response[apiKey] = s.setting_value ? s.setting_value.split(',') : [];
+                } else {
+                    response[apiKey] = s.setting_value;
+                }
+            }
+        });
+
+        res.json(response);
 
     } catch (error: any) {
         console.error("Update Settings Error:", error);
-        console.error("Payload:", JSON.stringify(req.body)); // Log the payload
+        console.error("Payload:", JSON.stringify(req.body));
         res.status(500).json({ message: "Error updating settings: " + (error.message || String(error)) });
     }
 };

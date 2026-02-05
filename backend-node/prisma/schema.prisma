@@ -103,5 +103,6 @@ model users {
   password   String?   @db.VarChar(255)
   phone      String?   @db.VarChar(255)
   role       String?   @db.VarChar(255)
+  username   String?   @unique(map: "users_username_unique") @db.VarChar(50)
   orders     orders[]
 }

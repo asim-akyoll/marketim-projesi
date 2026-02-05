@@ -23,7 +23,7 @@ export const createOrder = async (payload: CreateOrderRequest) => {
 // -----------------------------
 // MY ORDERS (Account sayfası)
 // -----------------------------
-export type OrderStatus = "PENDING" | "DELIVERED" | "CANCELLED";
+export type OrderStatus = "PREPARING" | "DELIVERED" | "CANCELLED";
 
 export interface MyOrderItemDto {
   productName: string;

@@ -76,7 +76,7 @@ const DeliveryPayment = () => {
                 type="number"
                 className="pl-10 w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500"
                 value={
-                  settings.minOrderAmount === 0 ? "" : settings.minOrderAmount
+                  (settings.minOrderAmount ?? 0) === 0 ? "" : settings.minOrderAmount
                 }
                 onChange={(e) => {
                   const val = e.target.value;
@@ -109,7 +109,7 @@ const DeliveryPayment = () => {
                 type="number"
                 className="pl-10 w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500"
                 value={
-                  settings.deliveryFeeFixed === 0
+                  (settings.deliveryFeeFixed ?? 0) === 0
                     ? ""
                     : settings.deliveryFeeFixed
                 }
@@ -135,7 +135,7 @@ const DeliveryPayment = () => {
                 type="number"
                 className="pl-10 w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500"
                 value={
-                  settings.deliveryFreeThreshold === 0
+                  (settings.deliveryFreeThreshold ?? 0) === 0
                     ? ""
                     : settings.deliveryFreeThreshold
                 }

@@ -50,6 +50,9 @@ export const getProducts = async (req: Request, res: Response) => {
         category_id: p.category_id?.toString(),
         stock: p.stock,
         price: p.price.toNumber(), // Decimal to number
+        imageUrl: p.image_url,
+        unitLabel: p.unit_label,
+        categoryName: p.categories?.name,
         category: p.categories ? { ...p.categories, id: p.categories.id.toString() } : null
       })),
       totalPages,
@@ -82,6 +85,9 @@ export const getProduct = async (req: Request, res: Response) => {
             id: product.id.toString(),
             category_id: product.category_id?.toString(),
             price: product.price.toNumber(),
+            imageUrl: product.image_url,
+            unitLabel: product.unit_label,
+            categoryName: product.categories?.name,
             category: product.categories ? { ...product.categories, id: product.categories.id.toString() } : null
         });
     } catch (error) {
@@ -137,6 +143,9 @@ export const getAdminProducts = async (req: Request, res: Response) => {
             id: p.id.toString(),
             category_id: p.category_id?.toString(),
             price: p.price.toNumber(),
+            imageUrl: p.image_url,
+            unitLabel: p.unit_label,
+            categoryName: p.categories?.name,
             category: p.categories ? { ...p.categories, id: p.categories.id.toString() } : null
         })),
         totalPages,
@@ -187,7 +196,13 @@ export const createProduct = async (req: Request, res: Response) => {
             return created;
         });
 
-        res.status(201).json({ ...product, id: product.id.toString(), price: product.price.toNumber() });
+        res.status(201).json({ 
+            ...product, 
+            id: product.id.toString(), 
+            price: product.price.toNumber(),
+            imageUrl: product.image_url,
+            unitLabel: product.unit_label
+        });
     } catch (error) {
         console.error("Create Product Error:", error);
         res.status(500).json({ message: "Error creating product" });
@@ -240,7 +255,13 @@ export const updateProduct = async (req: Request, res: Response) => {
             return updated;
         });
 
-        res.json({ ...product, id: product.id.toString(), price: product.price.toNumber() });
+        res.json({ 
+            ...product, 
+            id: product.id.toString(), 
+            price: product.price.toNumber(),
+            imageUrl: product.image_url,
+            unitLabel: product.unit_label
+        });
     } catch (error) {
         console.error("Update Product Error:", error);
         res.status(500).json({ message: "Error updating product" });
@@ -262,12 +283,18 @@ export const getLowStockProducts = async (req: Request, res: Response) => {
         const threshold = 10;
         const products = await prisma.products.findMany({
             where: { stock: { lte: threshold }, active: true },
-            take: 5
+            take: 5,
+            include: { categories: true }
         });
         const productsMapped = products.map((p: any) => ({
             ...p,
             id: p.id.toString(),
-            price: p.price.toNumber()
+            category_id: p.category_id?.toString(),
+            price: p.price.toNumber(),
+            imageUrl: p.image_url,
+            unitLabel: p.unit_label,
+            categoryName: p.categories?.name,
+            category: p.categories ? { ...p.categories, id: p.categories.id.toString() } : null
         }));
         
         // Mock PageResponse structure for frontend compatibility

@@ -11,10 +11,14 @@ dotenv.config();
 };
 
 import { Prisma } from "@prisma/client";
+
 // Decimal serialization
-(Prisma.Decimal.prototype as any).toJSON = function () {
-  return this.toNumber();
-};
+const decimal = Prisma.Decimal as any;
+if (decimal && decimal.prototype) {
+  decimal.prototype.toJSON = function () {
+    return this.toNumber();
+  };
+}
 
 const app = express();
 

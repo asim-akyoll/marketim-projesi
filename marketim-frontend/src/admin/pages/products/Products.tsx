@@ -546,10 +546,11 @@ const ProductManager = () => {
 
             <form onSubmit={handleSubmit} className="p-6 space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="productName" className="block text-sm font-medium text-gray-700 mb-1">
                   Ürün Adı
                 </label>
                 <input
+                  id="productName"
                   type="text"
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                   value={formData.name}
@@ -571,6 +572,7 @@ const ProductManager = () => {
                       <Upload className="text-gray-400" size={24} />
                     )}
                      <input
+                      id="productImage"
                       type="file"
                       accept="image/*"
                       className="absolute inset-0 opacity-0 cursor-pointer"
@@ -584,7 +586,7 @@ const ProductManager = () => {
                     )}
                   </div>
                   <div className="flex-1">
-                     <label className="block text-sm font-medium text-gray-700 mb-1">
+                     <label htmlFor="productImage" className="block text-sm font-medium text-gray-700 mb-1">
                         Ürün Görseli
                       </label>
                       <p className="text-xs text-gray-500 mb-2">
@@ -594,10 +596,11 @@ const ProductManager = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="productCategory" className="block text-sm font-medium text-gray-700 mb-1">
                   Kategori
                 </label>
                 <select
+                  id="productCategory"
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                   value={formData.categoryId}
                   onChange={(e) =>
@@ -613,10 +616,11 @@ const ProductManager = () => {
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label htmlFor="productPrice" className="block text-sm font-medium text-gray-700 mb-1">
                     Fiyat (₺)
                   </label>
                   <input
+                    id="productPrice"
                     type="number"
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                     value={formData.price}
@@ -627,10 +631,11 @@ const ProductManager = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label htmlFor="productStock" className="block text-sm font-medium text-gray-700 mb-1">
                     Stok
                   </label>
                   <input
+                    id="productStock"
                     type="number"
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                     value={formData.stock}
@@ -641,10 +646,11 @@ const ProductManager = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label htmlFor="productUnit" className="block text-sm font-medium text-gray-700 mb-1">
                     Birim Yazısı
                   </label>
                   <input
+                    id="productUnit"
                     type="text"
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                     placeholder="Örn: 1 kg, 500 ml, 2.5 L, 3 L, 15'li, Paket"

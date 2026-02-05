@@ -16,14 +16,14 @@ export const getDashboardStats = async (req: Request, res: Response) => {
         const [
             totalOrders,
             todayOrdersCount,
-            pendingCount,
+            preparingCount,
             deliveredCount,
             cancelledCount,
             recentOrdersRaw
         ] = await Promise.all([
             prisma.orders.count(),
             prisma.orders.count({ where: { created_at: { gte: today } } }),
-            prisma.orders.count({ where: { status: "PENDING" } }), // Or whatever enum backend uses
+            prisma.orders.count({ where: { status: "PREPARING" } }),
             prisma.orders.count({ where: { status: "DELIVERED" } }),
             prisma.orders.count({ where: { status: "CANCELLED" } }),
             prisma.orders.findMany({
@@ -67,7 +67,7 @@ export const getDashboardStats = async (req: Request, res: Response) => {
 
         const responseData = {
             todayOrderCount: todayOrdersCount,
-            pending: pendingCount,
+            preparing: preparingCount,
             delivered: deliveredCount,
             cancelled: cancelledCount,
             totalOrders: totalOrders,

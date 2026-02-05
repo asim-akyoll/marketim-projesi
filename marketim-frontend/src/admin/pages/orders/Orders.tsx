@@ -32,8 +32,8 @@ import toast from "react-hot-toast";
 // Helper for labels/colors
 const statusLabel = (s: OrderStatus) => {
   switch (s) {
-    case "PENDING":
-      return "Bekliyor";
+    case "PREPARING":
+      return "Hazırlanıyor";
     case "DELIVERED":
       return "Teslim Edildi";
     case "CANCELLED":
@@ -45,10 +45,10 @@ const statusLabel = (s: OrderStatus) => {
 
 const statusClass = (s: OrderStatus) => {
   switch (s) {
+    case "PREPARING":
+      return "bg-orange-100 text-orange-700";
     case "DELIVERED":
       return "bg-green-100 text-green-700";
-    case "PENDING":
-      return "bg-yellow-100 text-yellow-700";
     case "CANCELLED":
       return "bg-red-100 text-red-700";
     default:
@@ -58,7 +58,7 @@ const statusClass = (s: OrderStatus) => {
 
 // UI filter -> Backend Enum
 const filterUiToBackendStatus = (ui: string): OrderStatus | undefined => {
-  if (ui === "Bekliyor") return "PENDING";
+  if (ui === "Hazırlanıyor") return "PREPARING";
   if (ui === "Teslim Edildi") return "DELIVERED";
   if (ui === "İptal Edildi") return "CANCELLED";
   return undefined; // "Tümü"
@@ -258,7 +258,7 @@ const Orders = () => {
 
           {/* FILTER STATUS */}
           <div className="flex items-center gap-2 bg-white border border-gray-200 rounded-lg p-1">
-            {["Tümü", "Bekliyor", "Teslim Edildi", "İptal Edildi"].map((status) => (
+            {["Tümü", "Hazırlanıyor", "Teslim Edildi", "İptal Edildi"].map((status) => (
               <button
                 key={status}
                 onClick={() => {
@@ -285,7 +285,7 @@ const Orders = () => {
                 <th className="p-4 font-medium cursor-pointer" onClick={() => handleSort("id")}>
                   <div className="flex items-center gap-2">Sipariş No <ArrowUpDown size={14} /></div>
                 </th>
-                <th className="p-4 font-medium" >Müşteri</th> {/* Backend search only? Sorting by customerName inside JSON might not work unless defined in Entity? OrderService mapper uses user.firstName but join sort is easier? Let's disable sort for now or try user.firstName */}
+                <th className="p-4 font-medium" >Müşteri</th>
                 <th className="p-4 font-medium cursor-pointer" onClick={() => handleSort("totalAmount")}>
                   <div className="flex items-center gap-2">Tutar <ArrowUpDown size={14} /></div>
                 </th>
@@ -432,32 +432,44 @@ const Orders = () => {
                         <span className="w-1 h-4 bg-orange-500 rounded-full"></span>
                         Durum Güncelle
                     </h4>
+                    
+                    {/* Warning for final statuses */}
+                    {(orderDetail?.status === "DELIVERED" || orderDetail?.status === "CANCELLED") && (
+                      <div className="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-lg">
+                        <p className="text-sm text-amber-800 font-medium">
+                          ⚠️ {orderDetail.status === "DELIVERED" 
+                            ? "Teslim edilen siparişlerin durumu değiştirilemez." 
+                            : "İptal edilen siparişlerin durumu değiştirilemez."}
+                        </p>
+                      </div>
+                    )}
+                    
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                       <button
-                        disabled={detailLoading || !orderDetail}
-                        onClick={() => updateStatus("PENDING")}
+                        disabled={detailLoading || !orderDetail || orderDetail.status === "DELIVERED" || orderDetail.status === "CANCELLED"}
+                        onClick={() => updateStatus("PREPARING")}
                         className={`relative overflow-hidden group flex flex-col items-center justify-center gap-2 h-24 rounded-xl border-2 transition-all duration-200 ${
-                          orderDetail?.status === "PENDING"
-                            ? "bg-yellow-50 border-yellow-400 text-yellow-700 shadow-sm ring-1 ring-yellow-400"
-                            : "bg-white border-gray-100 text-gray-500 hover:border-yellow-200 hover:bg-yellow-50/50 hover:text-yellow-600"
+                          orderDetail?.status === "PREPARING"
+                            ? "bg-orange-50 border-orange-400 text-orange-700 shadow-sm ring-1 ring-orange-400"
+                            : "bg-white border-gray-100 text-gray-500 hover:border-orange-200 hover:bg-orange-50/50 hover:text-orange-600"
                         } disabled:opacity-50 disabled:cursor-not-allowed`}
                       >
-                         <div className={`p-2 rounded-full transition-colors ${orderDetail?.status === "PENDING" ? "bg-yellow-100" : "bg-gray-100 group-hover:bg-yellow-100"}`}>
-                            <Clock className={`w-5 h-5 ${orderDetail?.status === "PENDING" ? "text-yellow-600" : "text-gray-400 group-hover:text-yellow-600"}`} />
+                         <div className={`p-2 rounded-full transition-colors ${orderDetail?.status === "PREPARING" ? "bg-orange-100" : "bg-gray-100 group-hover:bg-orange-100"}`}>
+                            <Clock className={`w-5 h-5 ${orderDetail?.status === "PREPARING" ? "text-orange-600" : "text-gray-400 group-hover:text-orange-600"}`} />
                          </div>
-                         <span className="font-semibold text-sm">Bekliyor</span>
-                         {orderDetail?.status === "PENDING" && (
+                         <span className="font-semibold text-sm">Hazırlanıyor</span>
+                         {orderDetail?.status === "PREPARING" && (
                             <div className="absolute top-2 right-2">
                                 <span className="flex h-2 w-2">
-                                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-yellow-400 opacity-75"></span>
-                                  <span className="relative inline-flex rounded-full h-2 w-2 bg-yellow-500"></span>
+                                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75"></span>
+                                  <span className="relative inline-flex rounded-full h-2 w-2 bg-orange-500"></span>
                                 </span>
                             </div>
                          )}
                       </button>
 
                       <button
-                        disabled={detailLoading || !orderDetail}
+                        disabled={detailLoading || !orderDetail || orderDetail.status === "DELIVERED" || orderDetail.status === "CANCELLED"}
                         onClick={() => updateStatus("DELIVERED")}
                         className={`relative overflow-hidden group flex flex-col items-center justify-center gap-2 h-24 rounded-xl border-2 transition-all duration-200 ${
                           orderDetail?.status === "DELIVERED"
@@ -477,7 +489,7 @@ const Orders = () => {
                       </button>
 
                       <button
-                        disabled={detailLoading || !orderDetail}
+                        disabled={detailLoading || !orderDetail || orderDetail.status === "DELIVERED" || orderDetail.status === "CANCELLED"}
                         onClick={() => updateStatus("CANCELLED")}
                         className={`relative overflow-hidden group flex flex-col items-center justify-center gap-2 h-24 rounded-xl border-2 transition-all duration-200 ${
                           orderDetail?.status === "CANCELLED"

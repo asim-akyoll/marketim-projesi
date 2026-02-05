@@ -46,10 +46,11 @@ export const SettingsProvider = ({
   const saveSettings = async () => {
     if (!settings) return;
     try {
-      const updated = await updateAdminSettings(settings);
-      setSettings(updated);
-      toast.success("Ayarlarınız güncellendi");
-    } catch (err) {
+      const updatedSettings = await updateAdminSettings(settings); // Send FULL settings
+      setSettings(updatedSettings);
+      toast.success("Ayarlar başarıyla kaydedildi");
+    } catch (err: any) {
+      console.error(err);
       toast.error("Ayarlar güncellenemedi");
       throw err;
     }

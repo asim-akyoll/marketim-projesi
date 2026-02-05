@@ -30,7 +30,7 @@ const StoreInfo = () => {
               <input
                 type="text"
                 className="pl-10 w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500"
-                value={settings.storeName}
+                value={settings.storeName ?? ""}
                 onChange={(e) => updateField("storeName", e.target.value)}
               />
             </div>
@@ -49,8 +49,8 @@ const StoreInfo = () => {
               <input
                 type="tel"
                 className="pl-10 w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500"
-                value={settings.storePhone}
-                onChange={(e) => updateField("storePhone", e.target.value)}
+                value={settings.phone ?? ""}
+                onChange={(e) => updateField("phone", e.target.value)}
               />
             </div>
           </div>
@@ -68,8 +68,8 @@ const StoreInfo = () => {
               <input
                 type="email"
                 className="pl-10 w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500"
-                value={settings.storeEmail}
-                onChange={(e) => updateField("storeEmail", e.target.value)}
+                value={settings.email ?? ""}
+                onChange={(e) => updateField("email", e.target.value)}
               />
             </div>
           </div>
@@ -87,8 +87,8 @@ const StoreInfo = () => {
               <textarea
                 rows={3}
                 className="pl-10 w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500"
-                value={settings.storeAddress}
-                onChange={(e) => updateField("storeAddress", e.target.value)}
+                value={settings.address ?? ""}
+                onChange={(e) => updateField("address", e.target.value)}
               />
             </div>
           </div>

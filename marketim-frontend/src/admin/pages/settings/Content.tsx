@@ -20,7 +20,7 @@ const Content = () => {
           <textarea
             rows={6}
             className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 font-mono text-sm"
-            value={settings.faqText}
+            value={settings.faqText ?? ""}
             onChange={(e) => updateField("faqText", e.target.value)}
             placeholder="SSS metnini buraya giriniz..."
           />
@@ -35,7 +35,7 @@ const Content = () => {
           <textarea
             rows={6}
             className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 font-mono text-sm"
-            value={settings.termsText}
+            value={settings.termsText ?? ""}
             onChange={(e) => updateField("termsText", e.target.value)}
             placeholder="Kurallar metnini buraya giriniz..."
           />
@@ -50,7 +50,7 @@ const Content = () => {
           <textarea
             rows={6}
             className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 font-mono text-sm"
-            value={settings.kvkkText}
+            value={settings.kvkkText ?? ""}
             onChange={(e) => updateField("kvkkText", e.target.value)}
             placeholder="KVKK metnini buraya giriniz..."
           />
@@ -65,7 +65,7 @@ const Content = () => {
           <textarea
             rows={6}
             className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 font-mono text-sm"
-            value={settings.distanceSalesText}
+            value={settings.distanceSalesText ?? ""}
             onChange={(e) => updateField("distanceSalesText", e.target.value)}
             placeholder="Mesafeli satış sözleşmesi metnini giriniz..."
           />

@@ -6,8 +6,6 @@ export const generateReport = async (req: Request, res: Response) => {
     try {
         const { type, startDate, endDate } = req.query;
 
-        console.log("Generating Report:", type, startDate, endDate);
-
         if (!startDate || !endDate) {
             return res.status(400).json({ message: "Start date and End date required" });
         }
