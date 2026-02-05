@@ -16,7 +16,7 @@ export type RecentOrderResponse = {
 
 export type DashboardSummaryResponse = {
   todayOrderCount: number;
-  pending: number;
+  preparing: number;
   delivered: number;
   cancelled: number;
   totalOrders: number;

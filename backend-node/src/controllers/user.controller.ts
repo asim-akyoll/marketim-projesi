@@ -146,6 +146,11 @@ export const getCustomerOrders = async (req: Request, res: Response) => {
     try {
         const { userId } = req.params;
         
+        // Ensure userId is a string
+        if (Array.isArray(userId)) {
+            return res.status(400).json({ message: "Invalid user ID" });
+        }
+        
         const orders = await prisma.orders.findMany({
             where: { user_id: BigInt(userId) },
             take: 3,
