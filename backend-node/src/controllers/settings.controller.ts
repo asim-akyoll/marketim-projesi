@@ -66,7 +66,14 @@ export const updateSettings = async (req: Request, res: Response) => {
         for (const [key, value] of Object.entries(updates)) {
             const dbKey = REVERSE_KEY_MAP[key];
             if (dbKey) {
-                const strValue = String(value);
+                // Ensure value is not null/undefined
+                let strValue = "";
+                if (value !== null && value !== undefined) {
+                    strValue = String(value);
+                }
+
+                console.log(`Upserting ${dbKey} with length ${strValue.length}`);
+                
                 promises.push(
                     prisma.settings.upsert({
                         where: { setting_key: dbKey },

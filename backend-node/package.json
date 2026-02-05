@@ -1,6 +1,6 @@
 {
   "name": "backend-node",
-  "version": "1.0.16",
+  "version": "1.0.17",
   "main": "dist/server.js",
   "scripts": {
     "build": "tsc",
