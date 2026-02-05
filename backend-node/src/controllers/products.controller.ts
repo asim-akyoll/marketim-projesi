@@ -155,18 +155,36 @@ export const createProduct = async (req: Request, res: Response) => {
     try {
         const { name, price, stock, categoryId, description, imageUrl, unitLabel, active } = req.body;
 
-        const product = await prisma.products.create({
-            data: {
-                name,
-                price: new Prisma.Decimal(price),
-                stock: parseInt(stock as string),
-                category_id: categoryId ? BigInt(categoryId as string) : null,
-                description,
-                image_url: imageUrl,
-                unit_label: unitLabel || "Adet",
-                active: active !== undefined ? active : true,
-                created_at: new Date()
-            }
+        const product = await prisma.$transaction(async (tx) => {
+            const created = await tx.products.create({
+                data: {
+                    name,
+                    price: new Prisma.Decimal(price),
+                    stock: parseInt(stock as string),
+                    category_id: categoryId ? BigInt(categoryId as string) : null,
+                    description,
+                    image_url: imageUrl,
+                    unit_label: unitLabel || "Adet",
+                    active: active !== undefined ? active : true,
+                    created_at: new Date()
+                }
+            });
+
+            // Initial Stock Movement
+            await tx.stock_movements.create({
+                data: {
+                    product_id: created.id,
+                    type: "Emtiya Girisi",
+                    delta: created.stock,
+                    before_stock: 0,
+                    after_stock: created.stock,
+                    actor: "Admin",
+                    note: "Yeni Ürün",
+                    created_at: new Date()
+                }
+            });
+
+            return created;
         });
 
         res.status(201).json({ ...product, id: product.id.toString(), price: product.price.toNumber() });
@@ -181,23 +199,50 @@ export const updateProduct = async (req: Request, res: Response) => {
         const { id } = req.params;
         const { name, price, stock, categoryId, description, imageUrl, unitLabel, active } = req.body;
 
-        const product = await prisma.products.update({
-            where: { id: BigInt(id as string) },
-            data: {
-                name,
-                price: price ? new Prisma.Decimal(price) : undefined,
-                stock: stock !== undefined ? parseInt(stock as string) : undefined,
-                category_id: categoryId ? BigInt(categoryId as string) : undefined,
-                description,
-                image_url: imageUrl,
-                unit_label: unitLabel,
-                active,
-                updated_at: new Date()
+        const product = await prisma.$transaction(async (tx) => {
+            const current = await tx.products.findUnique({ where: { id: BigInt(id as string) } });
+            if (!current) throw new Error("Product not found");
+
+            let stockDelta = 0;
+            const newStock = stock !== undefined ? parseInt(stock as string) : current.stock;
+            stockDelta = newStock - current.stock;
+
+            const updated = await tx.products.update({
+                where: { id: BigInt(id as string) },
+                data: {
+                    name,
+                    price: price ? new Prisma.Decimal(price) : undefined,
+                    stock: newStock,
+                    category_id: categoryId ? BigInt(categoryId as string) : undefined,
+                    description,
+                    image_url: imageUrl,
+                    unit_label: unitLabel,
+                    active,
+                    updated_at: new Date()
+                }
+            });
+
+            if (stockDelta !== 0) {
+                 await tx.stock_movements.create({
+                    data: {
+                        product_id: updated.id,
+                        type: stockDelta > 0 ? "Stok Ekleme" : "Stok Dusurme",
+                        delta: stockDelta,
+                        before_stock: current.stock,
+                        after_stock: updated.stock,
+                        actor: "Admin", 
+                        note: "Manuel Guncelleme",
+                        created_at: new Date()
+                    }
+                });
             }
+
+            return updated;
         });
 
         res.json({ ...product, id: product.id.toString(), price: product.price.toNumber() });
     } catch (error) {
+        console.error("Update Product Error:", error);
         res.status(500).json({ message: "Error updating product" });
     }
 };

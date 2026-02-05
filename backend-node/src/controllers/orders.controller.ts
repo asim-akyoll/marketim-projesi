@@ -27,9 +27,29 @@ export const createOrder = async (req: Request, res: Response) => {
                 // Update stock manually or via stock_movement? 
                 // Java implementation used StockService. 
                 // Here we just decrement active stock for simplicity or add logic later.
+                // Update Stock & Record Movement
+                const beforeStock = product.stock;
+                const afterStock = beforeStock - item.quantity;
+
                 await tx.products.update({
                     where: { id: product.id },
-                    data: { stock: { decrement: item.quantity } }
+                    data: { stock: afterStock }
+                });
+
+                await tx.stock_movements.create({
+                    data: {
+                        product_id: product.id,
+                        type: "SALE",
+                        delta: -item.quantity,
+                        before_stock: beforeStock,
+                        after_stock: afterStock,
+                        actor: "System",
+                        reference_type: "ORDER",
+                        created_at: new Date()
+                        // reference_id will be updated after order creation or we can just link to order_item if needed, 
+                        // but schema has reference_id as BigInt. We'll leave it null or fill it if we have the order ID (which we don't yet).
+                        // Legacy likely did this in a separate phase or mapped it differently.
+                    }
                 });
 
                 const unitPrice = parseFloat(product.price.toString());

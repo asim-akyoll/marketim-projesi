@@ -12,6 +12,8 @@ import {
 import { updateSettings, getSettings } from "../controllers/settings.controller";
 import { getDashboardStats } from "../controllers/dashboard.controller";
 import { getCustomers } from "../controllers/user.controller";
+import { getStockMovements } from "../controllers/stock.controller";
+import { generateReport } from "../controllers/reports.controller";
 
 const router = Router();
 
@@ -43,8 +45,15 @@ router.put("/orders/:id/status", updateOrderStatus);
 router.get("/settings", getSettings); // Admin sees same settings
 router.put("/settings", updateSettings);
 router.patch("/settings", updateSettings); // Alias for frontend usage
+router.post("/system/cache/clear", (req, res) => res.json({ message: "Cache cleared" })); // Dummy Legacy Parity
 
 // Customers
 router.get("/customers", getCustomers);
+
+// Stock
+router.get("/stock-movements", getStockMovements);
+
+// Reports
+router.get("/reports", generateReport);
 
 export default router;
