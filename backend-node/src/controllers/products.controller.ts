@@ -155,7 +155,7 @@ export const createProduct = async (req: Request, res: Response) => {
     try {
         const { name, price, stock, categoryId, description, imageUrl, unitLabel, active } = req.body;
 
-        const product = await prisma.$transaction(async (tx) => {
+        const product = await prisma.$transaction(async (tx: any) => {
             const created = await tx.products.create({
                 data: {
                     name,
@@ -199,7 +199,7 @@ export const updateProduct = async (req: Request, res: Response) => {
         const { id } = req.params;
         const { name, price, stock, categoryId, description, imageUrl, unitLabel, active } = req.body;
 
-        const product = await prisma.$transaction(async (tx) => {
+        const product = await prisma.$transaction(async (tx: any) => {
             const current = await tx.products.findUnique({ where: { id: BigInt(id as string) } });
             if (!current) throw new Error("Product not found");
 
