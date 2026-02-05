@@ -1,7 +1,7 @@
 import axios, { AxiosError } from "axios";
 
-//const API_BASE_URL = "https://marketim-projesi.onrender.com";
-const API_BASE_URL = "http://localhost:3000";
+// Use environment variable for production, fallback to localhost for development
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
 
 const http = axios.create({
   baseURL: API_BASE_URL,
