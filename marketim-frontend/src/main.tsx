@@ -7,6 +7,11 @@ import { CartProvider } from "./context/CartContext";
 
 import { Toaster } from "react-hot-toast";
 
+// Register Service Worker for PWA
+import { registerSW } from 'virtual:pwa-register';
+
+registerSW({ immediate: true });
+
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <BrowserRouter>

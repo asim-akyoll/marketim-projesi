@@ -6,6 +6,7 @@ import { LogOut } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { publicSettingsService } from "../../services/publicSettingsService";
 import { authService } from "../../services/authService";
+import toast from "react-hot-toast";
 
 import { isShopOpen } from "../../utils/timeUtils";
 
@@ -49,7 +50,12 @@ export default function CustomerHeader({ search, onSearchChange, onLogoClick }: 
   }, []);
 
   const handleInstallClick = async () => {
-    if (!deferredPrompt) return;
+    if (!deferredPrompt) {
+      toast.error("Uygulamayı yüklemek için tarayıcı menüsünden 'Ana ekrana ekle' seçeneğini kullanın.", {
+        duration: 5000,
+      });
+      return;
+    }
     deferredPrompt.prompt();
     const { outcome } = await deferredPrompt.userChoice;
     if (outcome === 'accepted') {
