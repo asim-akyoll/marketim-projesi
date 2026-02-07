@@ -16,6 +16,9 @@ export default defineConfig({
         name: 'KöşeBaşı Market',
         short_name: 'KöşeBaşı',
         description: 'Hızlı ve Güvenli Alışverişin Adresi',
+        start_url: '/',
+        display: 'standalone',
+        background_color: '#ffffff',
         theme_color: '#ffffff',
         icons: [
           {
