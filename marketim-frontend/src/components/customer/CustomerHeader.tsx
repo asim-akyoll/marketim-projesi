@@ -154,18 +154,16 @@ export default function CustomerHeader({ search, onSearchChange, onLogoClick }: 
           </Link>
 
           <div className="relative flex items-center" ref={dropdownRef}>
-            {deferredPrompt && (
-              <button
-                onClick={handleInstallClick}
-                className="flex items-center justify-center w-9 h-9 md:w-11 md:h-11 mr-1 md:mr-2 rounded-full border border-slate-200 hover:bg-green-50 text-green-600 transition shadow-sm animate-pulse group"
-                title="Uygulamayı Yükle"
-              >
-                 <div className="relative flex items-center justify-center">
-                    <Smartphone className="w-5 h-5 md:w-6 md:h-6 stroke-[1.5]" />
-                    <ArrowDown className="absolute w-2.5 h-2.5 md:w-3 md:h-3 stroke-[2.5] pt-0.5" />
-                 </div>
-              </button>
-            )}
+            <button
+              onClick={handleInstallClick}
+              className="flex items-center justify-center w-9 h-9 md:w-11 md:h-11 mr-1 md:mr-2 rounded-full border border-slate-200 hover:bg-green-50 text-green-600 transition shadow-sm animate-pulse group"
+              title="Uygulamayı Yükle"
+            >
+              <div className="relative flex items-center justify-center">
+                <Smartphone className="w-5 h-5 md:w-6 md:h-6 stroke-[1.5]" />
+                <ArrowDown className="absolute w-2.5 h-2.5 md:w-3 md:h-3 stroke-[2.5] pt-0.5" />
+              </div>
+            </button>
             <button
               onClick={() => setOpen((v) => !v)}
               className={`flex items-center justify-center w-9 h-9 md:w-11 md:h-11 rounded-full border border-slate-200 hover:bg-slate-50 transition ${
