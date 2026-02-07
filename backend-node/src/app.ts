@@ -30,6 +30,8 @@ app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 // CORS Configuration
 const allowedOrigins = [
   "https://marketim-projesi.vercel.app",
+  "https://secmer.com.tr",
+  "https://www.secmer.com.tr",
   "https://marketim-projesi-production.up.railway.app", // Legacy
   "http://localhost:5173",
   "http://localhost:3000"
