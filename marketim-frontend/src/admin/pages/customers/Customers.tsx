@@ -18,7 +18,6 @@ import {
 const mapOrderStatusLabel = (status: string) => {
   if (status === "DELIVERED") return "Teslim Edildi";
   if (status === "PREPARING") return "Hazırlanıyor";
-  if (status === "PENDING") return "Bekliyor";
   if (status === "CANCELLED") return "İptal Edildi";
   return status;
 };
