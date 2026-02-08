@@ -17,6 +17,7 @@ import {
 
 const mapOrderStatusLabel = (status: string) => {
   if (status === "DELIVERED") return "Teslim Edildi";
+  if (status === "PREPARING") return "Hazırlanıyor";
   if (status === "PENDING") return "Bekliyor";
   if (status === "CANCELLED") return "İptal Edildi";
   return status;
@@ -284,9 +285,11 @@ const Customers = () => {
                                   ${
                                     label === "Teslim Edildi"
                                       ? "bg-green-100 text-green-700"
-                                      : label === "Bekliyor"
-                                      ? "bg-yellow-100 text-yellow-700"
-                                      : "bg-red-100 text-red-700"
+                                      : label === "Hazırlanıyor"
+                                      ? "bg-orange-100 text-orange-700"
+                                      : label === "İptal Edildi"
+                                      ? "bg-red-100 text-red-700"
+                                      : "bg-yellow-100 text-yellow-700"
                                   }`}
                                 >
                                   {label}
