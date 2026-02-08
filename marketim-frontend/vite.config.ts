@@ -60,23 +60,28 @@ export default defineConfig({
         ]
       },
       manifest: {
+        id: '/',
         name: 'KöşeBaşı Market',
         short_name: 'KöşeBaşı',
         description: 'Hızlı ve Güvenli Alışverişin Adresi',
         start_url: '/',
+        scope: '/',
         display: 'standalone',
+        orientation: 'portrait-primary',
         background_color: '#ffffff',
-        theme_color: '#ffffff',
+        theme_color: '#10b981',
         icons: [
           {
             src: 'pwa-192x192.png',
-            sizes: '192x192',
-            type: 'image/png'
+            sizes: '1024x1024',
+            type: 'image/png',
+            purpose: 'any maskable'
           },
           {
             src: 'pwa-512x512.png',
-            sizes: '512x512',
-            type: 'image/png'
+            sizes: '1024x1024',
+            type: 'image/png',
+            purpose: 'any maskable'
           }
         ]
       }
