@@ -457,13 +457,14 @@ const ProductManager = () => {
               <th className="p-4 font-medium">Kategori</th>
               <th className="p-4 font-medium">Fiyat</th>
               <th className="p-4 font-medium">Stok</th>
+              <th className="p-4 font-medium">Barkod</th>
               <th className="p-4 font-medium text-right">İşlemler</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">
             {products.length === 0 && !isLoading ? (
                <tr>
-                  <td colSpan={5} className="p-8 text-center text-gray-500">
+                  <td colSpan={6} className="p-8 text-center text-gray-500">
                     Ürün bulunamadı.
                   </td>
                </tr>
@@ -490,6 +491,9 @@ const ProductManager = () => {
                         {product.stock}
                         {product.unitLabel ? ` (${product.unitLabel})` : ""} adet
                     </span>
+                    </td>
+                    <td className="p-4 text-gray-600 text-sm">
+                      {product.barcode || "-"}
                     </td>
                     <td className="p-4 flex justify-end gap-2">
                     <button

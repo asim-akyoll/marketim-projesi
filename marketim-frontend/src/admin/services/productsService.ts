@@ -16,6 +16,7 @@ export type ProductResponse = {
   stock: number;
   imageUrl?: string | null;
   unitLabel?: string | null;
+  barcode?: string | null;
   active: boolean;
   categoryId?: number | null;
   categoryName?: string | null;
