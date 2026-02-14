@@ -108,12 +108,15 @@ export const getAdminProducts = async (req: Request, res: Response) => {
   
       const where: Prisma.productsWhereInput = {}; // Admin sees all
   
-      if (search) {
-        where.name = { contains: search, mode: "insensitive" };
-      }
-      if (categoryId) {
-        where.category_id = BigInt(categoryId);
-      }
+    if (search) {
+      where.OR = [
+        { name: { contains: search, mode: "insensitive" } },
+        { barcode: { contains: search, mode: "insensitive" } }
+      ];
+    }
+    if (categoryId) {
+      where.category_id = BigInt(categoryId);
+    }
   
       // Default newest first for admin usually? or ID asc? Java backend default was ID asc unless sorted.
       let orderBy: Prisma.productsOrderByWithRelationInput = { id: 'desc' }; // Newest first usually better for admin
