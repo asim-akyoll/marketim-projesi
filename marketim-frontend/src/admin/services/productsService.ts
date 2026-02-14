@@ -42,7 +42,7 @@ export async function getAdminProducts(
         size: query.size ?? 200,
         active: query.active,
         categoryId: query.categoryId,
-        q: query.q,
+        search: query.q,
         sort: query.sort ?? "id,desc",
       },
     }
