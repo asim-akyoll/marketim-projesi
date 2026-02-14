@@ -162,7 +162,7 @@ export const getAdminProducts = async (req: Request, res: Response) => {
 
 export const createProduct = async (req: Request, res: Response) => {
     try {
-        const { name, price, stock, categoryId, description, imageUrl, unitLabel, active } = req.body;
+        const { name, price, stock, categoryId, description, imageUrl, unitLabel, barcode, active } = req.body;
 
         const product = await prisma.$transaction(async (tx: any) => {
             const created = await tx.products.create({
@@ -174,6 +174,7 @@ export const createProduct = async (req: Request, res: Response) => {
                     description,
                     image_url: imageUrl,
                     unit_label: unitLabel || "Adet",
+                    barcode: barcode || null,
                     active: active !== undefined ? active : true,
                     created_at: new Date()
                 }
@@ -212,7 +213,7 @@ export const createProduct = async (req: Request, res: Response) => {
 export const updateProduct = async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
-        const { name, price, stock, categoryId, description, imageUrl, unitLabel, active } = req.body;
+        const { name, price, stock, categoryId, description, imageUrl, unitLabel, barcode, active } = req.body;
 
         const product = await prisma.$transaction(async (tx: any) => {
             const current = await tx.products.findUnique({ where: { id: BigInt(id as string) } });
@@ -232,6 +233,7 @@ export const updateProduct = async (req: Request, res: Response) => {
                     description,
                     image_url: imageUrl,
                     unit_label: unitLabel,
+                    barcode: barcode !== undefined ? barcode : undefined,
                     active,
                     updated_at: new Date()
                 }
