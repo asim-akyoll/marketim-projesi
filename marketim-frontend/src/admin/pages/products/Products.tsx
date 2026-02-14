@@ -262,6 +262,7 @@ const ProductManager = () => {
     stock: "",
     imageUrl: "",
     unitLabel: "",
+    barcode: "",
   });
 
   // Debounce search input
@@ -282,6 +283,7 @@ const ProductManager = () => {
       stock: "",
       imageUrl: "",
       unitLabel: "",
+      barcode: "",
     });
     setIsModalOpen(true);
   };
@@ -295,6 +297,7 @@ const ProductManager = () => {
       stock: String(product.stock ?? ""),
       imageUrl: product.imageUrl || "",
       unitLabel: product.unitLabel ?? "",
+      barcode: product.barcode ?? "",
     });
     setIsModalOpen(true);
   };
@@ -374,6 +377,7 @@ const ProductManager = () => {
       stock: Number(formData.stock),
       categoryId: Number(formData.categoryId),
       unitLabel: formData.unitLabel || null,
+      barcode: formData.barcode || null,
     };
 
     try {
@@ -657,6 +661,21 @@ const ProductManager = () => {
                     value={formData.unitLabel}
                     onChange={(e) =>
                       setFormData({ ...formData, unitLabel: e.target.value })
+                    }
+                  />
+                </div>
+                <div>
+                  <label htmlFor="productBarcode" className="block text-sm font-medium text-gray-700 mb-1">
+                    Barkod
+                  </label>
+                  <input
+                    id="productBarcode"
+                    type="text"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    placeholder="Ürün barkod numarası (opsiyonel)"
+                    value={formData.barcode}
+                    onChange={(e) =>
+                      setFormData({ ...formData, barcode: e.target.value })
                     }
                   />
                 </div>

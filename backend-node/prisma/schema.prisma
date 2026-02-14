@@ -50,6 +50,7 @@ model orders {
 model products {
   id              BigInt            @id @default(autoincrement())
   active          Boolean
+  barcode         String?           @db.VarChar(100)
   created_at      DateTime?         @db.Timestamp(6)
   description     String?           @db.VarChar(1000)
   image_url       String?           @db.VarChar(255)
@@ -62,6 +63,8 @@ model products {
   order_items     order_items[]
   categories      categories?       @relation(fields: [category_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fkog2rp4qthbtt2lfyhfo32lsw9")
   stock_movements stock_movements[]
+
+  @@index([barcode], map: "idx_products_barcode")
 }
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
